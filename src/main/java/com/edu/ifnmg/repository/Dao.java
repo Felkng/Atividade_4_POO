@@ -1,6 +1,7 @@
 package com.edu.ifnmg.repository;
 
 import com.edu.ifnmg.entity.Entity;
+import com.edu.ifnmg.role.Role;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -135,6 +136,22 @@ public abstract class Dao <E> implements IDao<E> {
             System.out.println("Exception: " + ex);
         }
 
+    }
+
+    public ArrayList<E> extractObjects(ResultSet rs){
+        ArrayList<E> objectList = new ArrayList<>();
+
+
+        try{
+            while (rs.next()){
+                E e = extractObject(rs);
+                objectList.add(e);
+            }
+        }catch(Exception ex){
+            System.out.println("Exception: " + ex);
+        }
+
+        return objectList;
     }
 
 }
