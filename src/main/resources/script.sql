@@ -13,6 +13,16 @@ CREATE TABLE book (
     price DECIMAL(10,2)
 );
 
+DROP TABLE IF EXISTS `credential`;
+CREATE TABLE credential (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  username varchar(15) NOT NULL UNIQUE_CHECKS,
+  password varchar(32) NOT NULL,
+  last_access date,
+  enabled bit,
+  PRIMARY KEY (`id`)
+);
+
 INSERT INTO book ( title, authors, acquisition, pages, year, edition, price ) VALUES ( ?,?,?,?,?,?,? );
 
 SELECT id, title, authors, acquisition, pages, year, edition, price FROM book WHERE id = ?;
