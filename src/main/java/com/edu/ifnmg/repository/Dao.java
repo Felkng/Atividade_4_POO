@@ -138,6 +138,7 @@ public abstract class Dao <E> implements IDao<E> {
 
     }
 
+
     public ArrayList<E> extractObjects(ResultSet rs){
         ArrayList<E> objectList = new ArrayList<>();
 
@@ -153,5 +154,4 @@ public abstract class Dao <E> implements IDao<E> {
 
         return objectList;
     }
-
 }

@@ -13,6 +13,13 @@ CREATE TABLE book (
     price DECIMAL(10,2)
 );
 
+CREATE TABLE user (
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    birthdate DATE NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
+
 INSERT INTO book ( title, authors, acquisition, pages, year, edition, price ) VALUES ( ?,?,?,?,?,?,? );
 
 SELECT id, title, authors, acquisition, pages, year, edition, price FROM book WHERE id = ?;
