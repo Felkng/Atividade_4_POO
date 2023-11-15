@@ -10,10 +10,11 @@ import java.util.logging.Logger;
 
 public class CredentialDao extends Dao<Credential> {
     public static final String TABLE = "credential";
+    // private static final int SALT = (int) "!asdf";
 
     @Override
     public String getSaveStatement() {
-        return "insert into " + TABLE + "(username, password, last_access, enabled) values(?, ?, ?, ?)";
+        return "insert into " + TABLE + " (username, password, last_access, enabled) values(?, ?, ?, ?)";
     }
 
     @Override
@@ -23,12 +24,12 @@ public class CredentialDao extends Dao<Credential> {
 
     @Override
     public String getFindByIdStatement() {
-        return "select id, username, password, last_access, enabled" + " from credential where id = ?";
+        return "select id, username, password, last_access, enabled from credential where id = ?";
     }
 
     @Override
     public String getFindAllStatement() {
-        return "select id, username, password, last_access, enabled" + " from credential";
+        return "select id, username, password, last_access, enabled from credential";
     }
 
     @Override

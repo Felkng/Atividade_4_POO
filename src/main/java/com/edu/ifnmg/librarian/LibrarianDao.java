@@ -22,12 +22,12 @@ public class LibrarianDao extends Dao<Librarian> {
 
     @Override
     public String getFindByIdStatement() {
-        return "select name, email, birthdate from " + TABLE + "where id ?";
+        return "select id, name, email, birthdate from " + TABLE + " where id = ?";
     }
 
     @Override
     public String getFindAllStatement() {
-        return "select name, email, birthdate from " + TABLE;
+        return "select id, name, email, birthdate from " + TABLE;
     }
 
     @Override
@@ -61,7 +61,6 @@ public class LibrarianDao extends Dao<Librarian> {
 
         try {
             queryLibrarian = new Librarian();
-
             queryLibrarian.setId(rs.getLong("id"));
             queryLibrarian.setName(rs.getString("name"));
         } catch (Exception ex) {

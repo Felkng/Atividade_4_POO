@@ -13,7 +13,7 @@ public class ReaderDao extends Dao<Reader>{
 
     @Override
     public String getSaveStatement() {
-        return "insert into " + TABLE + "(name,email,birthdate) values (?,?,?)";
+        return "insert into " + TABLE + " (name,email,birthdate, id) values (?,?,?,?)";
     }
 
     @Override
@@ -23,12 +23,12 @@ public class ReaderDao extends Dao<Reader>{
 
     @Override
     public String getFindByIdStatement() {
-        return "select name, email, birthdate from " + TABLE + "where id ?";
+        return "select id, name, email, birthdate from " + TABLE + " where id = ?";
     }
 
     @Override
     public String getFindAllStatement() {
-        return "select name, email, birthdate from " + TABLE;
+        return "select id, name, email, birthdate from " + TABLE;
     }
 
     @Override
