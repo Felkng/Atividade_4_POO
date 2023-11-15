@@ -13,6 +13,17 @@ CREATE TABLE book (
     price DECIMAL(10,2)
 );
 
+
+DROP TABLE IF EXISTS `credential`;
+CREATE TABLE credential (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  username varchar(15) NOT NULL UNIQUE_CHECKS,
+  password varchar(32) NOT NULL,
+  last_access date,
+  enabled bit,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE user (
     name VARCHAR(150) NOT NULL,
     email VARCHAR(255) NOT NULL,
