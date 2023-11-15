@@ -137,4 +137,8 @@ public abstract class Dao <E> implements IDao<E> {
 
     }
 
+    @Override
+    public ArrayList<E> extractObjects(ResultSet rs) {
+        return null;
+    }
 }
