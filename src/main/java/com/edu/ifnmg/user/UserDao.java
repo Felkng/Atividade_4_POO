@@ -12,7 +12,7 @@ public class UserDao extends Dao<User> {
 
     @Override
     public String getSaveStatement() {
-        return "insert into " + TABLE + " (name, email, birthdate)" + " values(?,?,?)";
+        return "insert into " + TABLE + " (name, email, birthdate, role_id) values(?,?,?,?)";
     }
 
     @Override
@@ -44,8 +44,10 @@ public class UserDao extends Dao<User> {
                 pstmt.setObject(2,user.getEmail(), Types.VARCHAR);
             if(user.getBirthDate() != null)
                 pstmt.setObject(3, user.getBirthDate(), Types.DATE);
+            if(user.getRole().getId() != null)
+                pstmt.setObject(4, user.getRole().getId(), Types.BIGINT);
             if(user.getId() != null)
-                pstmt.setObject(4,user.getId(), Types.BIGINT);
+                pstmt.setObject(5,user.getId(), Types.BIGINT);
         }catch(Exception ex){
             System.out.println("Exception in ComposeSave or Update " + ex);
         }

@@ -1,7 +1,6 @@
 package com.edu.ifnmg.repository;
 
 import com.edu.ifnmg.entity.Entity;
-import com.edu.ifnmg.role.Role;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,7 @@ public abstract class Dao <E> implements IDao<E> {
     @Override
     public Long saveOrUpdate(E e) {
         Long id = 0L;
-
+       
         if (((Entity) e).getId() == null
                 || ((Entity) e).getId() == 0) {
 
@@ -138,7 +137,7 @@ public abstract class Dao <E> implements IDao<E> {
 
     }
 
-
+    @Override
     public ArrayList<E> extractObjects(ResultSet rs){
         ArrayList<E> objectList = new ArrayList<>();
 

@@ -10,26 +10,32 @@ import java.sql.Types;
 public class RoleDao  extends Dao<Role> {
     public static final String TABLE = "role";
 
+    @Override
     public String getSaveStatement(){
         return "insert into " + TABLE + "(name) values (?)";
     }
 
+    @Override
     public String getUpdateStatement(){
         return "update " + TABLE + " set name = ? where id = ?";
     }
 
+    @Override
     public String getFindByIdStatement(){
         return "select name from " + TABLE + "where id ?";
     }
 
+    @Override
     public String getFindAllStatement(){
         return "select name from " + TABLE;
     }
 
+    @Override
     public String getDeleteStatement(){
         return "delete from " + TABLE + " where id = ?";
     }
 
+    @Override
     public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Role e) {
         try {
             pstmt.setObject(1, e.getName(), Types.VARCHAR);
@@ -42,6 +48,7 @@ public class RoleDao  extends Dao<Role> {
         }
     }
 
+    @Override
     public Role extractObject(ResultSet rs){
 
         Role queryRole = null;

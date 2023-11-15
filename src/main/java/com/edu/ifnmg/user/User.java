@@ -1,6 +1,8 @@
 package com.edu.ifnmg.user;
 
+import com.edu.ifnmg.credential.Credential;
 import com.edu.ifnmg.entity.Entity;
+import com.edu.ifnmg.role.Role;
 
 import java.time.LocalDate;
 
@@ -8,6 +10,19 @@ public class User extends Entity {
     private String name;
     private String email;
     private LocalDate birthDate;
+    private Role role;
+    private Credential credential;
+    
+
+    public User(){}
+
+    public User(String name, String email, LocalDate birthDate, Role role, Credential credential) throws Exception{
+        setName(name);
+        setEmail(email);
+        setBirthDate(birthDate);
+        setRole(role);
+        setCredential(credential);
+    }
 
     public String getName() {
         return name;
@@ -45,4 +60,22 @@ public class User extends Entity {
         else
             this.birthDate = birthDate;
     }
+
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Credential getCredential() {
+        return credential;
+    }
+
+    public void setCredential(Credential credential) {
+        this.credential = credential;
+    }
+    
 }
