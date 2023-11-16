@@ -73,6 +73,67 @@ public abstract class Dao <E> implements IDao<E> {
         return id;
     }
 
+    public Long saveOrUpdate(E e, Long userId) {
+        Long id = 0L;
+       
+        if (((Entity) e).getId() == null || ((Entity) e).getId() == 0) {
+            ((Entity) e).setId(userId);
+            // Insert a new register
+            // try-with-resources
+            try ( PreparedStatement preparedStatement
+                          = DbConnection.getConnection().prepareStatement(
+                    getSaveStatement(),
+                    Statement.RETURN_GENERATED_KEYS)) {
+
+                // Assemble the SQL statement with the data (->?)
+                composeSaveOrUpdateStatement(preparedStatement, e);
+
+                // Show the full sentence
+                System.out.println(">> SQL: " + preparedStatement);
+
+                // Performs insertion into the database
+                preparedStatement.executeUpdate();
+
+                // Retrieve the generated primary key
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+                // Moves to first retrieved data
+                if (resultSet.next()) {
+
+                    // Retrieve the returned primary key
+                    id = resultSet.getLong(1);
+                }
+
+            } catch (Exception ex) {
+                System.out.println("Exception: " + ex);
+            }
+
+        } else {
+            // Update existing record
+            try ( PreparedStatement preparedStatement
+                          = DbConnection.getConnection().prepareStatement(
+                    getUpdateStatement())) {
+
+                // Assemble the SQL statement with the data (->?)
+                composeSaveOrUpdateStatement(preparedStatement, e);
+
+                // Show the full sentence
+                System.out.println(">> SQL: " + preparedStatement);
+
+                // Performs the update on the database
+                preparedStatement.executeUpdate();
+
+                // Keep the primary key
+                id = ((Entity) e).getId();
+
+            } catch (Exception ex) {
+                System.out.println("Exception: " + ex);
+            }
+        }
+
+        return id;
+    }
+
     @Override
     public E findById(Long id) {
         try ( PreparedStatement preparedStatement
