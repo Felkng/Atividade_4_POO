@@ -13,15 +13,10 @@ CREATE TABLE book (
     price DECIMAL(10,2)
 )ENGINE=INNODB;
 
-DROP TABLE IF EXISTS `credential`;
-CREATE TABLE credential (
-  username varchar(15) NOT NULL UNIQUE,
-  password varchar(32) NOT NULL,
-  last_access date,
-  enabled bit,
-  id BIGINT NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY (id) REFERENCES user(id)
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE role (
+    name VARCHAR(20) NOT NULL UNIQUE,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
 )ENGINE=INNODB;
 
 DROP TABLE IF EXISTS `user`;
@@ -32,6 +27,17 @@ CREATE TABLE user (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     role_id BIGINT,
     FOREIGN KEY (role_id) REFERENCES role(id)
+)ENGINE=INNODB;
+
+DROP TABLE IF EXISTS `credential`;
+CREATE TABLE credential (
+  username varchar(15) NOT NULL UNIQUE,
+  password varchar(32) NOT NULL,
+  last_access date,
+  enabled bit,
+  id BIGINT NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY (id) REFERENCES user(id)
 )ENGINE=INNODB;
 
 DROP TABLE IF EXISTS `librarian`;
@@ -54,8 +60,4 @@ CREATE TABLE reader (
     FOREIGN KEY (id) REFERENCES user(id)
 )ENGINE=INNODB;
 
-DROP TABLE IF EXISTS `role`;
-CREATE TABLE role (
-    name VARCHAR(20) NOT NULL,
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
-)ENGINE=INNODB;
+
