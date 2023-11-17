@@ -5,6 +5,7 @@ import com.edu.ifnmg.user.User;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Credential extends Entity{
     private String username;
@@ -14,9 +15,8 @@ public class Credential extends Entity{
     private User user;
 
     public Credential() {
+        setEnabled(null);
     }
-
-    
 
     public Credential(Long id, String username, String password, LocalDate lastAccess, Boolean enabled, User user) throws Exception{
         setId(id);
@@ -27,25 +27,6 @@ public class Credential extends Entity{
         setUser(user);
     }
 
-    private static String calculateMD5(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-
-            md.update(password.getBytes());
-
-            byte[] mdBytes = md.digest();
-
-            StringBuilder sb = new StringBuilder();
-            for (byte mdByte : mdBytes) {
-                sb.append(Integer.toString((mdByte & 0xff) + 0x100, 16).substring(1));
-            }
-
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public String getUsername() {
         return username;
@@ -62,7 +43,7 @@ public class Credential extends Entity{
     }
 
     public void setPassword(String password) throws Exception{
-        this.password = calculateMD5(password);
+        this.password = password;
     }
 
     public LocalDate getLastAccess() {
@@ -78,6 +59,10 @@ public class Credential extends Entity{
     }
 
     public void setEnabled(Boolean enabled) {
+        if(enabled == null) {
+            this.enabled = true;
+            return;
+        }
         this.enabled = enabled;
     }
 
