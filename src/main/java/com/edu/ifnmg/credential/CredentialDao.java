@@ -7,6 +7,7 @@ import com.edu.ifnmg.user.UserDao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,41 @@ public class CredentialDao extends Dao<Credential> {
     @Override
     public String getUpdateStatement() {
         return "update "+ TABLE + " set username = ?, password = ?, last_access = ?, enabled = ? where id = ?";
+    }
+
+    @Override
+    public Long saveOrUpdate(Credential e) {
+        Long idCredential = super.saveOrUpdate(e);
+
+        if ( e.getId() == null || e.getId() == 0) {
+            e.setId(-idCredential);
+        } else {
+            e.setId(idCredential);
+        }
+
+
+        return idCredential;
+    }
+
+    @Override
+    public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Credential e){
+        try {
+            if(e.getId() != null && e.getId() < 0) {
+                pstmt.setString(1, e.getUsername());
+                pstmt.setString(2, e.getPassword() + SALT);
+                pstmt.setObject(3, e.getLastAccess(), Types.VARCHAR);
+                pstmt.setBoolean(4, e.getEnabled());
+                pstmt.setLong(5, -e.getUser().getId());
+            } else {
+                pstmt.setString(1, e.getUsername());
+                pstmt.setString(2, e.getPassword() + SALT);
+                pstmt.setObject(3, e.getLastAccess(), Types.VARCHAR);
+                pstmt.setBoolean(4, e.getEnabled());
+                pstmt.setLong(5, e.getUser().getId());
+            }
+        } catch ( SQLException ex ) {
+            System.out.println("Exception in composeSave or Update: " + ex);
+        }
     }
 
     @Override
@@ -76,7 +112,7 @@ public class CredentialDao extends Dao<Credential> {
         try{
         Credential credentialInDataBase = findByCredential(credential);
         if(credentialInDataBase != null)
-            user = new UserDao().findById(credentialInDataBase.getId());
+            user = credentialInDataBase.getUser();
         
         }catch (Exception ex) {
             System.out.println("Exception in extractObject: " + ex);
@@ -84,22 +120,22 @@ public class CredentialDao extends Dao<Credential> {
         return user;
     }
     
-    @Override
-    public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Credential e) {
-        try {
-            pstmt.setString(1, e.getUsername());
-            pstmt.setString(2, e.getPassword() + SALT);
-            pstmt.setObject(3, e.getLastAccess());
-            pstmt.setBoolean(4, e.getEnabled());
-
-            if (e.getId() != null) {
-                pstmt.setLong(5, e.getId());
-            }
-        } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
-            System.out.println("Exception in extractObject: " + ex);
-        }
-    }
+//     @Override
+//     public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Credential e) {
+//         try {
+//             pstmt.setString(1, e.getUsername());
+//             pstmt.setString(2, e.getPassword() + SALT);
+//             pstmt.setObject(3, e.getLastAccess());
+//             pstmt.setBoolean(4, e.getEnabled());
+//
+//             if (e.getId() != null) {
+//                 pstmt.setLong(5, e.getId());
+//             }
+//         } catch (Exception ex) {
+//             System.out.println("Exception: " + ex);
+//             System.out.println("Exception in extractObject: " + ex);
+//         }
+//     }
 
     @Override
     public Credential extractObject(ResultSet resultSet) {

@@ -24,9 +24,6 @@ public abstract class Dao <E> implements IDao<E> {
                     getSaveStatement(),
                     Statement.RETURN_GENERATED_KEYS)) {
 
-                if(((Entity) e).getId() != null && ((Entity) e).getId() < 0)
-                    ((Entity) e).setId(-((Entity) e).getId());
-
                 // Assemble the SQL statement with the data (->?)
                 composeSaveOrUpdateStatement(preparedStatement, e);
 

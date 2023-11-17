@@ -170,4 +170,40 @@ public class Tests {
             System.out.println(ex.getMessage());
         }
     }
+
+    public static void TestG() {
+        System.out.println("--------------------------------------TEST G--------------------------------------");
+        try {
+            Role role = new Role("Bibliotecario");
+            Long roleID = new RoleDao().saveOrUpdate(role);
+            role.setId(roleID);
+            
+            Credential luigiC = new Credential(null, "Luigi99", "lulu", LocalDate.now(), null, null);
+            
+            Librarian luigi = null;
+            luigi = new Librarian(
+                    "luigi Teste G",
+                    "luigi@mail.COM",
+                    LocalDate.now(),
+                    role,
+                    luigiC);
+
+            Long userId = new UserDao().saveOrUpdate(luigi);
+            luigi.setId(userId);
+            luigiC.setUser(luigi);
+            new CredentialDao().saveOrUpdate(luigiC);
+            
+            new LibrarianDao().saveOrUpdate(luigi);
+            
+            Librarian luigiTeste = null;
+            luigiTeste = new LibrarianDao().findById(userId);
+            luigiTeste.setEmail("luigi@maiaiidsoifdhsifal.com");
+            luigiTeste.setBirthDate(LocalDate.of(2093, 5, 22));
+            new LibrarianDao().saveOrUpdate(luigiTeste);
+
+            System.out.println("Bibliotecário criado com sucesso");
+        } catch ( Exception ex ) {
+            System.out.println(ex.getMessage());
+        }
+    }
 }
