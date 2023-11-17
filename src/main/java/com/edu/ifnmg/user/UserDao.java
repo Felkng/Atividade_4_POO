@@ -65,7 +65,6 @@ public class UserDao extends Dao<User> {
             user.setId(rs.getLong("id"));
             Role role = new RoleDao().findById(rs.getLong("role_id"));
             user.setRole(role);
-            // user.setCredential(new CredentialDao().findById(user.getId()));
             user.setEmail(rs.getString("email"));
             user.setBirthDate(rs.getDate("birthdate").toLocalDate());
         }catch( Exception ex){

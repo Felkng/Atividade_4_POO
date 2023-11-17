@@ -50,8 +50,6 @@ public class LibrarianDao extends Dao<Librarian> {
                 pstmt.setObject(2, librarian.getEmail(), Types.VARCHAR);
             if(librarian.getBirthDate() != null)
                 pstmt.setObject(3, librarian.getBirthDate(), Types.VARCHAR);
-            // if(librarian.getRole().getId() != null)
-                // pstmt.setObject(4, librarian.getRole().getId(), Types.BIGINT);
             if (librarian.getId() != null) {
                 pstmt.setObject(4, librarian.getId(), Types.BIGINT);
             }

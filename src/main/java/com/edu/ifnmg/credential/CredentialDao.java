@@ -79,8 +79,7 @@ public class CredentialDao extends Dao<Credential> {
             user = new UserDao().findById(credentialInDataBase.getId());
         
         }catch (Exception ex) {
-        
-            // Lo    System.out.println("Exception: " + ex);gger.getLogger(CredentialDao.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in extractObject: " + ex);
         }
         return user;
     }
@@ -98,7 +97,7 @@ public class CredentialDao extends Dao<Credential> {
             }
         } catch (Exception ex) {
             System.out.println("Exception: " + ex);
-            // Logger.getLogger(CredentialDao.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception in extractObject: " + ex);
         }
     }
 
@@ -110,6 +109,8 @@ public class CredentialDao extends Dao<Credential> {
         try {
             credential = new Credential();
             credential.setId(resultSet.getLong("id"));
+            User user = new UserDao().findById(credential.getId());
+            credential.setUser(user);
             credential.setUsername(resultSet.getString("username"));
             credential.setPassword(resultSet.getString("password"));
             credential.setLastAccess( resultSet.getObject("last_access", LocalDate.class));

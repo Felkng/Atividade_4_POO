@@ -59,7 +59,6 @@ public abstract class Dao <E> implements IDao<E> {
                 composeSaveOrUpdateStatement(preparedStatement, e);
 
                 // Show the full sentence
-//                System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs the update on the database
                 preparedStatement.executeUpdate();
@@ -85,7 +84,6 @@ public abstract class Dao <E> implements IDao<E> {
             preparedStatement.setLong(1, id);
 
             // Show the full sentence
-//            System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -109,7 +107,6 @@ public abstract class Dao <E> implements IDao<E> {
                 getFindAllStatement())) {
 
             // Show the full sentence
-//            System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -130,7 +127,6 @@ public abstract class Dao <E> implements IDao<E> {
                      = DbConnection.getConnection().prepareStatement(getDeleteStatement())) {
             preparedStatement.setLong(1,id);
 
-//            System.out.println(">>>SQL: " + preparedStatement);
             preparedStatement.executeUpdate();
 
         }catch (Exception ex) {
