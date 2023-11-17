@@ -1,6 +1,9 @@
 package com.edu.ifnmg.user;
 
+import com.edu.ifnmg.credential.CredentialDao;
 import com.edu.ifnmg.repository.Dao;
+import com.edu.ifnmg.role.Role;
+import com.edu.ifnmg.role.RoleDao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +25,7 @@ public class UserDao extends Dao<User> {
 
     @Override
     public String getFindByIdStatement() {
-        return "select name, email, birthdate from " + TABLE + " where id = ?";
+        return "select name, email, birthdate, id, role_id from " + TABLE + " where id = ?";
     }
 
     @Override
@@ -58,8 +61,11 @@ public class UserDao extends Dao<User> {
         User user = null;
         try{
             user = new User();
-            user.setId(rs.getLong("id"));
             user.setName(rs.getString("name"));
+            user.setId(rs.getLong("id"));
+            Role role = new RoleDao().findById(rs.getLong("role_id"));
+            user.setRole(role);
+            // user.setCredential(new CredentialDao().findById(user.getId()));
             user.setEmail(rs.getString("email"));
             user.setBirthDate(rs.getDate("birthdate").toLocalDate());
         }catch( Exception ex){

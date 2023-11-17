@@ -5,8 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-
+import com.edu.ifnmg.credential.Credential;
+import com.edu.ifnmg.credential.CredentialDao;
+import com.edu.ifnmg.librarian.Librarian;
 import com.edu.ifnmg.repository.Dao;
+import com.edu.ifnmg.role.RoleDao;
+import com.edu.ifnmg.user.User;
+import com.edu.ifnmg.user.UserDao;
 
 public class ReaderDao extends Dao<Reader>{
     public static final String TABLE = "reader";
@@ -58,9 +63,15 @@ public class ReaderDao extends Dao<Reader>{
 
         try {
             queryReader = new Reader();
-
+            
             queryReader.setId(rs.getLong("id"));
-            queryReader.setName(rs.getString("name"));
+            User user = new UserDao().findById(queryReader.getId());
+            Credential credential = new CredentialDao().findById(queryReader.getId());
+            queryReader.setName(user.getName());
+            queryReader.setEmail(user.getEmail());
+            queryReader.setRole(user.getRole());
+            queryReader.setBirthDate(user.getBirthDate());
+            queryReader.setCredential(credential);
         } catch (Exception ex) {
             System.out.println("Exception in extractObject: " + ex);
         }

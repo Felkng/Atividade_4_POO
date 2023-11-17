@@ -1,6 +1,12 @@
 package com.edu.ifnmg.librarian;
 
+import com.edu.ifnmg.credential.Credential;
+import com.edu.ifnmg.credential.CredentialDao;
 import com.edu.ifnmg.repository.Dao;
+import com.edu.ifnmg.role.Role;
+import com.edu.ifnmg.role.RoleDao;
+import com.edu.ifnmg.user.User;
+import com.edu.ifnmg.user.UserDao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,9 +66,17 @@ public class LibrarianDao extends Dao<Librarian> {
         Librarian queryLibrarian = null;
 
         try {
+
             queryLibrarian = new Librarian();
+            
             queryLibrarian.setId(rs.getLong("id"));
-            queryLibrarian.setName(rs.getString("name"));
+            User user = new UserDao().findById(queryLibrarian.getId());
+            Credential credential = new CredentialDao().findById(queryLibrarian.getId());
+            queryLibrarian.setName(user.getName());
+            queryLibrarian.setEmail(user.getEmail());
+            queryLibrarian.setRole(user.getRole());
+            queryLibrarian.setBirthDate(user.getBirthDate());
+            queryLibrarian.setCredential(credential);
         } catch (Exception ex) {
             System.out.println("Exception in extractObject: " + ex);
         }
