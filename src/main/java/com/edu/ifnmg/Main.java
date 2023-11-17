@@ -7,5 +7,6 @@ public class Main {
         Tests.TestC();
         Tests.TestD();
         Tests.TestE();
+        Tests.TestF();
     }
 }

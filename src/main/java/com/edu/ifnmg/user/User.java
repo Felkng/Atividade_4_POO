@@ -71,7 +71,7 @@ public class User extends Entity {
     }
 
     public Credential getCredential() {
-        return credential;
+        return this.credential;
     }
 
     public void setCredential(Credential credential) {
