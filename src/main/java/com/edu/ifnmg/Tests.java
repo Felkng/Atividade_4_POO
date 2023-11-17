@@ -23,7 +23,9 @@ public class Tests {
             Role role = new Role("Bibliotecario");
             Long roleID = new RoleDao().saveOrUpdate(role);
             role.setId(roleID);
-            Credential luigiC = new Credential(null, "Luigi22", "lulu", null, null, null);
+            
+            Credential luigiC = new Credential(null, "Luigi1", "lulu", LocalDate.now(), null, null);
+            
             Librarian luigi = null;
             luigi = new Librarian(
                     "luigi um",
@@ -31,19 +33,21 @@ public class Tests {
                     LocalDate.now(),
                     role,
                     luigiC);
+
             Long userId = new UserDao().saveOrUpdate(luigi);
             luigiC.setId(-userId);
             new CredentialDao().saveOrUpdate(luigiC);
+            
             luigi.setId(-userId);
             new LibrarianDao().saveOrUpdate(luigi);
+            
             Librarian luigiTeste = null;
             luigiTeste = new LibrarianDao().findById(userId);
             luigiTeste.setEmail("luigi@maiaiidsoifdhsifal.com");
             luigiTeste.setBirthDate(LocalDate.of(2093, 05, 22));
             new LibrarianDao().saveOrUpdate(luigiTeste);
 
-            System.out.println("Bilbiotecario: " + luigi.getName() + " Email: " + luigi.getEmail() + " "
-                    + luigiTeste.getCredential().getUsername() + " ");
+            System.out.println("Bibliotecário criado com sucesso");
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -63,11 +67,12 @@ public class Tests {
                     "felipe@mail.COM",
                     LocalDate.now(),
                     role,
-                    new Credential(null, "felipeJJ", "Lulu", null, true, felipe));
+                    new Credential(null, "felipeJJ", "Lulu", LocalDate.now(), true, felipe));
 
             Long userId = new UserDao().saveOrUpdate(felipe);
             felipe.getCredential().setId(-userId);
             new CredentialDao().saveOrUpdate(felipe.getCredential());
+            
             felipe.setId(-userId);
             new ReaderDao().saveOrUpdate(felipe);
 
@@ -76,7 +81,7 @@ public class Tests {
             felipe.setBirthDate(LocalDate.of(2077, 8, 10));
             new ReaderDao().saveOrUpdate(felipe);
 
-            System.out.println("Leitor: " + felipe.getName() + " Email: " + felipe.getEmail());
+            System.out.println("Leitor 1 criado com sucesso");
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -96,11 +101,12 @@ public class Tests {
                     "marcos@mail.COM",
                     LocalDate.now(),
                     role,
-                    new Credential(null, "marcosmarquin", "Lulu", null, true, marcos));
+                    new Credential(null, "marcosmarquin", "Lulu", LocalDate.now(), true, marcos));
 
             Long userId = new UserDao().saveOrUpdate(marcos);
             marcos.getCredential().setId(-userId);
             new CredentialDao().saveOrUpdate(marcos.getCredential());
+            
             marcos.setId(-userId);
             new ReaderDao().saveOrUpdate(marcos);
 
@@ -109,7 +115,7 @@ public class Tests {
             marcos.setBirthDate(LocalDate.of(1977, 12, 26));
             new ReaderDao().saveOrUpdate(marcos);
 
-            System.out.println(marcos.getName());
+            System.out.println("Leitor 2 criado com sucesso");
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -122,6 +128,7 @@ public class Tests {
 
         try {
             allObjects = new LibrarianDao().findAll();
+            System.out.println("Todos os bibliotecários: ");
             for (var x : allObjects) {
                 System.out.println(x.getName());
             }
@@ -137,6 +144,7 @@ public class Tests {
 
         try {
             allObjects = new ReaderDao().findAll();
+            System.out.println("Todos os leitores: ");
             for (var x : allObjects) {
                 System.out.println(x.getName());
             }
@@ -151,11 +159,13 @@ public class Tests {
 
         try {
             Credential luigi = new Credential();
-            luigi.setUsername("Luigi15");
+            luigi.setUsername("Luigi1");
             luigi.setPassword("lulu");
 
             User user = new CredentialDao().authenticate(luigi);
-            System.out.println(user.getName() + " " + user.getId());
+            user.setCredential(new CredentialDao().findById(user.getId()));
+            System.out.println(user.getName() + " " + user.getId() + " " + user.getBirthDate() + " " + user.getCredential().getUsername() + " " +
+                               user.getRole().getName());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
