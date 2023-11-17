@@ -15,7 +15,7 @@ public abstract class Dao <E> implements IDao<E> {
         Long id = 0L;
        
         if (((Entity) e).getId() == null
-                || ((Entity) e).getId() == 0) {
+                || ((Entity) e).getId() <= 0) {
 
             // Insert a new register
             // try-with-resources
@@ -23,6 +23,9 @@ public abstract class Dao <E> implements IDao<E> {
                           = DbConnection.getConnection().prepareStatement(
                     getSaveStatement(),
                     Statement.RETURN_GENERATED_KEYS)) {
+
+                if(((Entity) e).getId() != null && ((Entity) e).getId() < 0)
+                    ((Entity) e).setId(-((Entity) e).getId());
 
                 // Assemble the SQL statement with the data (->?)
                 composeSaveOrUpdateStatement(preparedStatement, e);
@@ -35,7 +38,6 @@ public abstract class Dao <E> implements IDao<E> {
 
                 // Retrieve the generated primary key
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
-
                 // Moves to first retrieved data
                 if (resultSet.next()) {
 
@@ -57,68 +59,7 @@ public abstract class Dao <E> implements IDao<E> {
                 composeSaveOrUpdateStatement(preparedStatement, e);
 
                 // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
-
-                // Performs the update on the database
-                preparedStatement.executeUpdate();
-
-                // Keep the primary key
-                id = ((Entity) e).getId();
-
-            } catch (Exception ex) {
-                System.out.println("Exception: " + ex);
-            }
-        }
-
-        return id;
-    }
-
-    public Long saveOrUpdate(E e, Long userId) {
-        Long id = 0L;
-       
-        if (((Entity) e).getId() == null || ((Entity) e).getId() == 0) {
-            ((Entity) e).setId(userId);
-            // Insert a new register
-            // try-with-resources
-            try ( PreparedStatement preparedStatement
-                          = DbConnection.getConnection().prepareStatement(
-                    getSaveStatement(),
-                    Statement.RETURN_GENERATED_KEYS)) {
-
-                // Assemble the SQL statement with the data (->?)
-                composeSaveOrUpdateStatement(preparedStatement, e);
-
-                // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
-
-                // Performs insertion into the database
-                preparedStatement.executeUpdate();
-
-                // Retrieve the generated primary key
-                ResultSet resultSet = preparedStatement.getGeneratedKeys();
-
-                // Moves to first retrieved data
-                if (resultSet.next()) {
-
-                    // Retrieve the returned primary key
-                    id = resultSet.getLong(1);
-                }
-
-            } catch (Exception ex) {
-                System.out.println("Exception: " + ex);
-            }
-
-        } else {
-            // Update existing record
-            try ( PreparedStatement preparedStatement
-                          = DbConnection.getConnection().prepareStatement(
-                    getUpdateStatement())) {
-
-                // Assemble the SQL statement with the data (->?)
-                composeSaveOrUpdateStatement(preparedStatement, e);
-
-                // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
+//                System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs the update on the database
                 preparedStatement.executeUpdate();
@@ -144,7 +85,7 @@ public abstract class Dao <E> implements IDao<E> {
             preparedStatement.setLong(1, id);
 
             // Show the full sentence
-            System.out.println(">> SQL: " + preparedStatement);
+//            System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -168,7 +109,7 @@ public abstract class Dao <E> implements IDao<E> {
                 getFindAllStatement())) {
 
             // Show the full sentence
-            System.out.println(">> SQL: " + preparedStatement);
+//            System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -189,7 +130,7 @@ public abstract class Dao <E> implements IDao<E> {
                      = DbConnection.getConnection().prepareStatement(getDeleteStatement())) {
             preparedStatement.setLong(1,id);
 
-            System.out.println(">>>SQL: " + preparedStatement);
+//            System.out.println(">>>SQL: " + preparedStatement);
             preparedStatement.executeUpdate();
 
         }catch (Exception ex) {
@@ -201,8 +142,6 @@ public abstract class Dao <E> implements IDao<E> {
     @Override
     public ArrayList<E> extractObjects(ResultSet rs){
         ArrayList<E> objectList = new ArrayList<>();
-
-
         try{
             while (rs.next()){
                 E e = extractObject(rs);
