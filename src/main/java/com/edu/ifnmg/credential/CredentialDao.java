@@ -7,9 +7,8 @@ import com.edu.ifnmg.user.UserDao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CredentialDao extends Dao<Credential> {
     public static final String TABLE = "credential";
@@ -23,6 +22,37 @@ public class CredentialDao extends Dao<Credential> {
     @Override
     public String getUpdateStatement() {
         return "update "+ TABLE + " set username = ?, password = ?, last_access = ?, enabled = ? where id = ?";
+    }
+
+    @Override
+    public Long saveOrUpdate(Credential e) {
+        
+        e.setId(e.getUser().getId());
+        
+        Long idCredential = super.saveOrUpdate(e);
+
+        return idCredential;
+    }
+
+    @Override
+    public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Credential e){
+        try {
+            if(e.getId() != null && e.getId() < 0) {
+                pstmt.setString(1, e.getUsername());
+                pstmt.setString(2, e.getPassword() + SALT);
+                pstmt.setObject(3, e.getLastAccess(), Types.DATE);
+                pstmt.setBoolean(4, e.getEnabled());
+                pstmt.setLong(5, -e.getUser().getId());
+            } else {
+                pstmt.setString(1, e.getUsername());
+                pstmt.setString(2, e.getPassword());
+                pstmt.setObject(3, e.getLastAccess(), Types.DATE);
+                pstmt.setBoolean(4, e.getEnabled());
+                pstmt.setLong(5, e.getUser().getId());
+            }
+        } catch ( SQLException ex ) {
+            System.out.println("Exception in composeSave or Update: " + ex);
+        }
     }
 
     @Override
@@ -53,7 +83,7 @@ public class CredentialDao extends Dao<Credential> {
             preparedStatement.setString(1, credential.getUsername());
             preparedStatement.setString(2, credential.getPassword() + SALT);
             // Show the full sentence
-            System.out.println(">> SQL: " + preparedStatement);
+            // System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,7 +94,7 @@ public class CredentialDao extends Dao<Credential> {
             }
 
         } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception in find by Credential: " + ex);
         }
 
         return null;
@@ -74,31 +104,14 @@ public class CredentialDao extends Dao<Credential> {
     public User authenticate(Credential credential){
         User user = null;
         try{
-        Credential credentialInDataBase = findByCredential(credential);
-        if(credentialInDataBase != null)
-            user = new UserDao().findById(credentialInDataBase.getId());
-        
+            Credential credentialInDataBase = findByCredential(credential);
+            if(credentialInDataBase != null)
+                user = credentialInDataBase.getUser();
+            
         }catch (Exception ex) {
-            System.out.println("Exception in extractObject: " + ex);
+                System.out.println("Exception in extractObject: " + ex);
         }
         return user;
-    }
-    
-    @Override
-    public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Credential e) {
-        try {
-            pstmt.setString(1, e.getUsername());
-            pstmt.setString(2, e.getPassword() + SALT);
-            pstmt.setObject(3, e.getLastAccess());
-            pstmt.setBoolean(4, e.getEnabled());
-
-            if (e.getId() != null) {
-                pstmt.setLong(5, e.getId());
-            }
-        } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
-            System.out.println("Exception in extractObject: " + ex);
-        }
     }
 
     @Override
@@ -116,7 +129,7 @@ public class CredentialDao extends Dao<Credential> {
             credential.setLastAccess( resultSet.getObject("last_access", LocalDate.class));
             credential.setEnabled(resultSet.getBoolean("enabled"));
          } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception in extractObject: " + ex);
         }
 
         return credential;

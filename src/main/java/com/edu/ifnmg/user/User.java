@@ -77,5 +77,11 @@ public class User extends Entity {
     public void setCredential(Credential credential) {
         this.credential = credential;
     }
+
+    @Override
+    public String toString() {
+        return "Nome: \"" + this.name + "\", Email: \"" + this.email + "\", Data de nascimento: \"" + this.birthDate.toString() +  "\", Papel: \"" + this.role.getName() 
+        + "\", Credencial: \"" + this.credential.getUsername() + "\"";
+    }
     
 }

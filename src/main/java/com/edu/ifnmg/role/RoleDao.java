@@ -1,6 +1,5 @@
 package com.edu.ifnmg.role;
 
-import com.edu.ifnmg.entity.Entity;
 import com.edu.ifnmg.repository.Dao;
 import com.edu.ifnmg.repository.DbConnection;
 
@@ -9,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 
 public class RoleDao extends Dao<Role> {
     public static final String TABLE = "role";
@@ -39,6 +37,10 @@ public class RoleDao extends Dao<Role> {
         return "delete from " + TABLE + " where id = ?";
     }
 
+    private String getFindByRoleStatement(){
+        return "select name, id from " + TABLE + " where name like ?";
+    }
+
     @Override
     public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Role e) {
         try {
@@ -52,20 +54,39 @@ public class RoleDao extends Dao<Role> {
         }
     }
 
+    public Role findByRole(String role) {
+        role = "%" + role + "%";
+        try ( PreparedStatement preparedStatement
+                      = DbConnection.getConnection().prepareStatement(
+                getFindByRoleStatement())) {
+
+            // Assemble the SQL statement with the id
+            preparedStatement.setString(1, role);
+
+            // Show the full sentence
+            // System.out.println(">> SQL: " + preparedStatement);
+
+            // Performs the query on the database
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Returns the respective object if exists
+            if (resultSet.next()) {
+                return extractObject(resultSet);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Exception im findByRole: " + ex);
+        }
+
+        return null;
+    }
+
     @Override
     public Long saveOrUpdate(Role role) {
         Long id = 0L;
-
-        ArrayList<Role> alreadyHave = new RoleDao().findAll();
-
-        for (var x : alreadyHave) {
-            if (x.getName().equals(role.getName()))
-                role.setId(x.getId());
-        }
-
-        if (role.getId() != null) {
-            return role.getId();
-        }
+        Role roleToCompare = new RoleDao().findByRole(role.getName());
+        if(roleToCompare != null)
+            return roleToCompare.getId();
 
         if (role.getId() == null
                 || role.getId() == 0) {
@@ -80,7 +101,7 @@ public class RoleDao extends Dao<Role> {
                 composeSaveOrUpdateStatement(preparedStatement, role);
 
                 // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
+                // System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs insertion into the database
                 preparedStatement.executeUpdate();
@@ -108,7 +129,7 @@ public class RoleDao extends Dao<Role> {
                 composeSaveOrUpdateStatement(preparedStatement, role);
 
                 // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
+                // System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs the update on the database
                 preparedStatement.executeUpdate();

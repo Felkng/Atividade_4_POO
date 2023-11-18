@@ -24,14 +24,11 @@ public abstract class Dao <E> implements IDao<E> {
                     getSaveStatement(),
                     Statement.RETURN_GENERATED_KEYS)) {
 
-                if(((Entity) e).getId() != null && ((Entity) e).getId() < 0)
-                    ((Entity) e).setId(-((Entity) e).getId());
-
                 // Assemble the SQL statement with the data (->?)
                 composeSaveOrUpdateStatement(preparedStatement, e);
 
                 // Show the full sentence
-                System.out.println(">> SQL: " + preparedStatement);
+                // System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs insertion into the database
                 preparedStatement.executeUpdate();
@@ -46,7 +43,7 @@ public abstract class Dao <E> implements IDao<E> {
                 }
 
             } catch (Exception ex) {
-                System.out.println("Exception: " + ex);
+                System.out.println("Exception in SaveDao: " + ex);
             }
 
         } else {
@@ -59,6 +56,7 @@ public abstract class Dao <E> implements IDao<E> {
                 composeSaveOrUpdateStatement(preparedStatement, e);
 
                 // Show the full sentence
+                // System.out.println(">> SQL: " + preparedStatement);
 
                 // Performs the update on the database
                 preparedStatement.executeUpdate();
@@ -67,7 +65,7 @@ public abstract class Dao <E> implements IDao<E> {
                 id = ((Entity) e).getId();
 
             } catch (Exception ex) {
-                System.out.println("Exception: " + ex);
+                System.out.println("Exception in UpdateDao: " + ex);
             }
         }
 
@@ -84,6 +82,7 @@ public abstract class Dao <E> implements IDao<E> {
             preparedStatement.setLong(1, id);
 
             // Show the full sentence
+            // System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -94,7 +93,7 @@ public abstract class Dao <E> implements IDao<E> {
             }
 
         } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception im findByIdDao: " + ex);
         }
 
         return null;
@@ -107,6 +106,7 @@ public abstract class Dao <E> implements IDao<E> {
                 getFindAllStatement())) {
 
             // Show the full sentence
+            // System.out.println(">> SQL: " + preparedStatement);
 
             // Performs the query on the database
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -115,7 +115,7 @@ public abstract class Dao <E> implements IDao<E> {
             return extractObjects(resultSet);
 
         } catch (Exception ex) {
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception in findAllDao: " + ex);
         }
 
         return null;
@@ -130,7 +130,7 @@ public abstract class Dao <E> implements IDao<E> {
             preparedStatement.executeUpdate();
 
         }catch (Exception ex) {
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception in deleteDao: " + ex);
         }
 
     }
@@ -144,7 +144,7 @@ public abstract class Dao <E> implements IDao<E> {
                 objectList.add(e);
             }
         }catch(Exception ex){
-            System.out.println("Exception: " + ex);
+            System.out.println("Exception in extractObjects DAO: " + ex);
         }
 
         return objectList;
