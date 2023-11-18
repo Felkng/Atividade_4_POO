@@ -4,16 +4,13 @@ import java.time.LocalDate;
 
 import com.edu.ifnmg.credential.Credential;
 import com.edu.ifnmg.credential.CredentialDao;
-import com.edu.ifnmg.entity.Entity;
 import com.edu.ifnmg.librarian.Librarian;
 import com.edu.ifnmg.librarian.LibrarianDao;
 import com.edu.ifnmg.reader.Reader;
 import com.edu.ifnmg.reader.ReaderDao;
-import com.edu.ifnmg.repository.Dao;
 import com.edu.ifnmg.role.Role;
 import com.edu.ifnmg.role.RoleDao;
 import com.edu.ifnmg.user.User;
-import com.edu.ifnmg.user.UserDao;
 import java.util.ArrayList;
 
 public class Tests {
@@ -24,22 +21,18 @@ public class Tests {
             Long roleID = new RoleDao().saveOrUpdate(role);
             role.setId(roleID);
             
-            Credential luigiC = new Credential(null, "Luigi1", "lulu", LocalDate.now(), null, null);
+            Credential luigiC = new Credential(null, "Luigi", "lulu", LocalDate.now(), null, null);
             
             Librarian luigi = null;
             luigi = new Librarian(
-                    "luigi um",
+                    "Luigi Eliabe",
                     "luigi@mail.COM",
                     LocalDate.now(),
                     role,
                     luigiC);
-
-            Long userId = new UserDao().saveOrUpdate(luigi);
-            luigiC.setId(-userId);
-            new CredentialDao().saveOrUpdate(luigiC);
-            
-            luigi.setId(-userId);
-            new LibrarianDao().saveOrUpdate(luigi);
+    
+            luigiC.setUser(luigi);
+            Long userId = new LibrarianDao().saveOrUpdate(luigi);
             
             Librarian luigiTeste = null;
             luigiTeste = new LibrarianDao().findById(userId);
@@ -48,6 +41,7 @@ public class Tests {
             new LibrarianDao().saveOrUpdate(luigiTeste);
 
             System.out.println("Bibliotecário criado com sucesso");
+            System.out.println(luigiTeste.toString());
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -63,25 +57,21 @@ public class Tests {
 
             Reader felipe = null;
             felipe = new Reader(
-                    "felipe um",
+                    "Felipe Rodrigues",
                     "felipe@mail.COM",
                     LocalDate.now(),
                     role,
-                    new Credential(null, "felipeJJ", "Lulu", LocalDate.now(), true, felipe));
+                    new Credential(null, "felipe", "fefe", LocalDate.now(), true, felipe));
+            felipe.getCredential().setUser(felipe);
+            Long userId = new ReaderDao().saveOrUpdate(felipe);
 
-            Long userId = new UserDao().saveOrUpdate(felipe);
-            felipe.getCredential().setId(-userId);
-            new CredentialDao().saveOrUpdate(felipe.getCredential());
-            
-            felipe.setId(-userId);
-            new ReaderDao().saveOrUpdate(felipe);
-
-            felipe = new ReaderDao().findById((long) felipe.getId());
+            felipe = new ReaderDao().findById(userId);
             felipe.setEmail("felipinho@mail.com");
             felipe.setBirthDate(LocalDate.of(2077, 8, 10));
             new ReaderDao().saveOrUpdate(felipe);
 
             System.out.println("Leitor 1 criado com sucesso");
+            System.out.println(felipe.toString());
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -97,25 +87,21 @@ public class Tests {
 
             Reader marcos = null;
             marcos = new Reader(
-                    "marcos um",
+                    "Marcos Danel",
                     "marcos@mail.COM",
                     LocalDate.now(),
                     role,
-                    new Credential(null, "marcosmarquin", "Lulu", LocalDate.now(), true, marcos));
+                    new Credential(null, "marcos", "tresesposas", LocalDate.now(), true, marcos));
+            marcos.getCredential().setUser(marcos);
+            Long userId = new ReaderDao().saveOrUpdate(marcos);
 
-            Long userId = new UserDao().saveOrUpdate(marcos);
-            marcos.getCredential().setId(-userId);
-            new CredentialDao().saveOrUpdate(marcos.getCredential());
-            
-            marcos.setId(-userId);
-            new ReaderDao().saveOrUpdate(marcos);
-
-            marcos = new ReaderDao().findById((long) marcos.getId());
+            marcos = new ReaderDao().findById(userId);
             marcos.setEmail("felipinho@mail.com");
             marcos.setBirthDate(LocalDate.of(1977, 12, 26));
             new ReaderDao().saveOrUpdate(marcos);
 
             System.out.println("Leitor 2 criado com sucesso");
+            System.out.println(marcos.toString());
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -159,50 +145,13 @@ public class Tests {
 
         try {
             Credential luigi = new Credential();
-            luigi.setUsername("Luigi1");
+            luigi.setUsername("Luigi");
             luigi.setPassword("lulu");
 
             User user = new CredentialDao().authenticate(luigi);
             user.setCredential(new CredentialDao().findById(user.getId()));
-            System.out.println(user.getName() + " " + user.getId() + " " + user.getBirthDate() + " " + user.getCredential().getUsername() + " " +
-                               user.getRole().getName());
+            System.out.println(user.toString());
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    public static void TestG() {
-        System.out.println("--------------------------------------TEST G--------------------------------------");
-        try {
-            Role role = new Role("Bibliotecario");
-            Long roleID = new RoleDao().saveOrUpdate(role);
-            role.setId(roleID);
-            
-            Credential luigiC = new Credential(null, "Luigi99", "lulu", LocalDate.now(), null, null);
-            
-            Librarian luigi = null;
-            luigi = new Librarian(
-                    "luigi Teste G",
-                    "luigi@mail.COM",
-                    LocalDate.now(),
-                    role,
-                    luigiC);
-
-            Long userId = new UserDao().saveOrUpdate(luigi);
-            luigi.setId(userId);
-            luigiC.setUser(luigi);
-            new CredentialDao().saveOrUpdate(luigiC);
-            
-            new LibrarianDao().saveOrUpdate(luigi);
-            
-            Librarian luigiTeste = null;
-            luigiTeste = new LibrarianDao().findById(userId);
-            luigiTeste.setEmail("luigi@maiaiidsoifdhsifal.com");
-            luigiTeste.setBirthDate(LocalDate.of(2093, 5, 22));
-            new LibrarianDao().saveOrUpdate(luigiTeste);
-
-            System.out.println("Bibliotecário criado com sucesso");
-        } catch ( Exception ex ) {
             System.out.println(ex.getMessage());
         }
     }
