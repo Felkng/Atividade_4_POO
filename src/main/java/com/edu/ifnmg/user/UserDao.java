@@ -1,6 +1,5 @@
 package com.edu.ifnmg.user;
 
-import com.edu.ifnmg.credential.CredentialDao;
 import com.edu.ifnmg.repository.Dao;
 import com.edu.ifnmg.role.Role;
 import com.edu.ifnmg.role.RoleDao;
@@ -20,7 +19,7 @@ public class UserDao extends Dao<User> {
 
     @Override
     public String getUpdateStatement() {
-        return "update " + TABLE + " set name = ?, email = ?, birthdate = ?";
+        return "update " + TABLE + " set name = ?, email = ?, birthdate = ?, role_id = ? where id = ?";
     }
 
     @Override
@@ -67,7 +66,7 @@ public class UserDao extends Dao<User> {
             user.setRole(role);
             user.setEmail(rs.getString("email"));
             user.setBirthDate(rs.getDate("birthdate").toLocalDate());
-        }catch( Exception ex){
+        }catch( Exception ex ){
             System.out.println("Exception in extractObject: " + ex);
         }
         return user;

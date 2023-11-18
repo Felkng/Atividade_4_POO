@@ -2,10 +2,7 @@ package com.edu.ifnmg.credential;
 import com.edu.ifnmg.entity.Entity;
 import com.edu.ifnmg.user.User;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class Credential extends Entity{
     private String username;

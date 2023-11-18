@@ -7,10 +7,7 @@ import java.sql.Types;
 
 import com.edu.ifnmg.credential.Credential;
 import com.edu.ifnmg.credential.CredentialDao;
-import com.edu.ifnmg.librarian.Librarian;
 import com.edu.ifnmg.repository.Dao;
-import com.edu.ifnmg.role.RoleDao;
-import com.edu.ifnmg.user.User;
 import com.edu.ifnmg.user.UserDao;
 
 public class ReaderDao extends Dao<Reader>{
@@ -29,15 +26,15 @@ public class ReaderDao extends Dao<Reader>{
     @Override
     public Long saveOrUpdate(Reader e) {
         Long idReader = new UserDao().saveOrUpdate(e);
-       
         if ( e.getId() == null || e.getId() == 0) {
             e.setId(-idReader);
         } else {
             e.setId(idReader);
         }
-
+        
         super.saveOrUpdate(e);
-
+        new CredentialDao().saveOrUpdate(e.getCredential());
+        
         return idReader;
     }
 
@@ -47,12 +44,12 @@ public class ReaderDao extends Dao<Reader>{
             if(e.getId() != null && e.getId() < 0) {
                 pstmt.setString(1, e.getName());
                 pstmt.setString(2, e.getEmail());
-                pstmt.setObject(3, e.getBirthDate(), Types.VARCHAR);
+                pstmt.setObject(3, e.getBirthDate(), Types.DATE);
                 pstmt.setLong(4, -e.getId());
             } else {
                 pstmt.setString(1, e.getName());
                 pstmt.setString(2, e.getEmail());
-                pstmt.setObject(3, e.getBirthDate(), Types.VARCHAR);
+                pstmt.setObject(3, e.getBirthDate(), Types.DATE);
                 pstmt.setLong(4, e.getId());
             }
         } catch ( SQLException ex ) {
@@ -75,21 +72,6 @@ public class ReaderDao extends Dao<Reader>{
         return "delete from " + TABLE + " where id = ?";
     }
 
-    // @Override
-    // public void composeSaveOrUpdateStatement(PreparedStatement pstmt, Reader e) {
-    //     try {
-    //         pstmt.setObject(1, e.getName(), Types.VARCHAR);
-    //         pstmt.setObject(2, e.getEmail(), Types.VARCHAR);
-    //         pstmt.setObject(3, e.getBirthDate(), Types.VARCHAR);
-
-    //         if (e.getId() != null) {
-    //             pstmt.setObject(4, e.getId(), Types.BIGINT);
-    //         }
-    //     } catch (SQLException ex) {
-    //         System.out.println("Exception in composeSave or Update: " + ex);
-    //     }
-    // }
-
     @Override
     public Reader extractObject(ResultSet rs) {
 
@@ -99,12 +81,11 @@ public class ReaderDao extends Dao<Reader>{
             queryReader = new Reader();
             
             queryReader.setId(rs.getLong("id"));
-            User user = new UserDao().findById(queryReader.getId());
             Credential credential = new CredentialDao().findById(queryReader.getId());
-            queryReader.setName(user.getName());
-            queryReader.setEmail(user.getEmail());
-            queryReader.setRole(user.getRole());
-            queryReader.setBirthDate(user.getBirthDate());
+            queryReader.setName(credential.getUser().getName());
+            queryReader.setEmail(credential.getUser().getEmail());
+            queryReader.setRole(credential.getUser().getRole());
+            queryReader.setBirthDate(credential.getUser().getBirthDate());
             queryReader.setCredential(credential);
         } catch (Exception ex) {
             System.out.println("Exception in extractObject: " + ex);

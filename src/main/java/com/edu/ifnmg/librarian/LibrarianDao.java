@@ -3,9 +3,6 @@ package com.edu.ifnmg.librarian;
 import com.edu.ifnmg.credential.Credential;
 import com.edu.ifnmg.credential.CredentialDao;
 import com.edu.ifnmg.repository.Dao;
-import com.edu.ifnmg.role.Role;
-import com.edu.ifnmg.role.RoleDao;
-import com.edu.ifnmg.user.User;
 import com.edu.ifnmg.user.UserDao;
 
 import java.sql.PreparedStatement;
@@ -29,15 +26,15 @@ public class LibrarianDao extends Dao<Librarian> {
     @Override
     public Long saveOrUpdate(Librarian e) {
         Long idLibrarian = new UserDao().saveOrUpdate(e);
-       
         if ( e.getId() == null || e.getId() == 0) {
             e.setId(-idLibrarian);
         } else {
             e.setId(idLibrarian);
         }
-
+        
         super.saveOrUpdate(e);
-
+        new CredentialDao().saveOrUpdate(e.getCredential());
+        
         return idLibrarian;
     }
 
@@ -47,12 +44,12 @@ public class LibrarianDao extends Dao<Librarian> {
             if(e.getId() != null && e.getId() < 0) {
                 pstmt.setString(1, e.getName());
                 pstmt.setString(2, e.getEmail());
-                pstmt.setObject(3, e.getBirthDate(), Types.VARCHAR);
+                pstmt.setObject(3, e.getBirthDate(), Types.DATE);
                 pstmt.setLong(4, -e.getId());
             } else {
                 pstmt.setString(1, e.getName());
                 pstmt.setString(2, e.getEmail());
-                pstmt.setObject(3, e.getBirthDate(), Types.VARCHAR);
+                pstmt.setObject(3, e.getBirthDate(), Types.DATE);
                 pstmt.setLong(4, e.getId());
             }
         } catch ( SQLException ex ) {
@@ -86,12 +83,11 @@ public class LibrarianDao extends Dao<Librarian> {
             queryLibrarian = new Librarian();
             
             queryLibrarian.setId(rs.getLong("id"));
-            User user = new UserDao().findById(queryLibrarian.getId());
             Credential credential = new CredentialDao().findById(queryLibrarian.getId());
-            queryLibrarian.setName(user.getName());
-            queryLibrarian.setEmail(user.getEmail());
-            queryLibrarian.setRole(user.getRole());
-            queryLibrarian.setBirthDate(user.getBirthDate());
+            queryLibrarian.setName(credential.getUser().getName());
+            queryLibrarian.setEmail(credential.getUser().getEmail());
+            queryLibrarian.setRole(credential.getUser().getRole());
+            queryLibrarian.setBirthDate(credential.getUser().getBirthDate());
             queryLibrarian.setCredential(credential);
         } catch (Exception ex) {
             System.out.println("Exception in extractObject: " + ex);
