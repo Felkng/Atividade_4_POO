@@ -1,6 +1,8 @@
 package com.edu.ifnmg.user;
 
 import com.edu.ifnmg.repository.Dao;
+import com.edu.ifnmg.role.Role;
+import com.edu.ifnmg.role.RoleDao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,17 +14,17 @@ public class UserDao extends Dao<User> {
 
     @Override
     public String getSaveStatement() {
-        return "insert into " + TABLE + " (name, email, birthdate)" + " values(?,?,?)";
+        return "insert into " + TABLE + " (name, email, birthdate, role_id) values(?,?,?,?)";
     }
 
     @Override
     public String getUpdateStatement() {
-        return "update " + TABLE + " set name = ?, email = ?, birthdate = ?";
+        return "update " + TABLE + " set name = ?, email = ?, birthdate = ?, role_id = ? where id = ?";
     }
 
     @Override
     public String getFindByIdStatement() {
-        return "select name, email, birthdate from " + TABLE + " where id = ?";
+        return "select name, email, birthdate, id, role_id from " + TABLE + " where id = ?";
     }
 
     @Override
@@ -44,8 +46,10 @@ public class UserDao extends Dao<User> {
                 pstmt.setObject(2,user.getEmail(), Types.VARCHAR);
             if(user.getBirthDate() != null)
                 pstmt.setObject(3, user.getBirthDate(), Types.DATE);
+            if(user.getRole().getId() != null)
+                pstmt.setObject(4, user.getRole().getId(), Types.BIGINT);
             if(user.getId() != null)
-                pstmt.setObject(4,user.getId(), Types.BIGINT);
+                pstmt.setObject(5,user.getId(), Types.BIGINT);
         }catch(Exception ex){
             System.out.println("Exception in ComposeSave or Update " + ex);
         }
@@ -56,11 +60,13 @@ public class UserDao extends Dao<User> {
         User user = null;
         try{
             user = new User();
-            user.setId(rs.getLong("id"));
             user.setName(rs.getString("name"));
+            user.setId(rs.getLong("id"));
+            Role role = new RoleDao().findById(rs.getLong("role_id"));
+            user.setRole(role);
             user.setEmail(rs.getString("email"));
             user.setBirthDate(rs.getDate("birthdate").toLocalDate());
-        }catch( Exception ex){
+        }catch( Exception ex ){
             System.out.println("Exception in extractObject: " + ex);
         }
         return user;

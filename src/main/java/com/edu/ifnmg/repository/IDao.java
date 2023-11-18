@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public interface IDao <E>{
+public abstract interface IDao <E>{
     String getSaveStatement();
     String getUpdateStatement();
     String getFindByIdStatement();

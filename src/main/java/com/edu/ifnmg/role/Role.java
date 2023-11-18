@@ -9,7 +9,19 @@ public class Role extends Entity {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws Exception{
+        if(name.length() > 20)
+            throw new Exception("Role name has more than 20 caracters!");
+        if(name.equals(""))
+            throw new Exception("Role undefined!");
+        
+        this.name = name.toLowerCase();
     }
+
+    public Role(String name) throws Exception{
+        setName(name);
+    }
+
+    public Role (){}
+
 }
